@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.projetos.workshop_springboot.entities.enums.OrderStatus;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,7 +14,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import tools.jackson.databind.jsonFormatVisitors.JsonFormatTypes;
 
 @Entity
 @Table(name = "tb_order") 
@@ -27,6 +27,7 @@ public class Order implements Serializable{
 	private Long id;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyy-MM-dd'T'HH:mm:ss'Z'", timezone = "GMT")
 	private Instant moment;
+	private Integer orderStatus;
 	
 	@ManyToOne
 	@JoinColumn(name = "client_id")
@@ -36,11 +37,11 @@ public class Order implements Serializable{
 		
 	}
 
-	public Order(Long id, Instant moment, User client) {
-		super();
+	public Order(Long id, Instant moment, User client, OrderStatus orderStatus) {
 		this.id = id;
 		this.moment = moment;
 		this.client = client;
+		setOrderStatus(orderStatus);
 	}
 
 	public Long getId() {
@@ -65,6 +66,14 @@ public class Order implements Serializable{
 
 	public void setClient(User client) {
 		this.client = client;
+	}	
+
+	public OrderStatus getOrderStatus() {
+		return OrderStatus.valueOf(orderStatus);
+	}
+
+	public void setOrderStatus(OrderStatus orderStatus) {
+		if(orderStatus != null) this.orderStatus = orderStatus.getCode();
 	}
 
 	@Override
